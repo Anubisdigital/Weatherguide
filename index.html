@@ -799,6 +799,25 @@
     </footer>
 
     <script>
+        
+        async function getWeather() {
+    // ... (your existing spinner code)
+    try {
+        const response = await fetch(`${BACKEND_URL}/get_weather?city=${encodeURIComponent(city)}`);
+        
+        // This check prevents the "JSON" crash!
+        if (!response.ok) {
+            const textContent = await response.text(); // Get the plain text error
+            throw new Error(`Server said: ${textContent}`);
+        }
+        
+        const data = await response.json();
+        updateWeatherDisplay(data);
+    } catch (error) {
+        alert(`Anubis Digital, we have a lab leak: ${error.message}`);
+    }
+}
+
         document.addEventListener('DOMContentLoaded', function() {
             // Elements
             const cityInput = document.getElementById('city-input');
