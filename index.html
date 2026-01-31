@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WealthWise | Financial Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Slab:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #2ecc71;
+            --warning: #e74c3c;
+            --light: #f8f9fa;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --radius: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), #1a2530);
+            color: white;
+            padding: 20px 0;
+            box-shadow: var(--shadow);
+            border-radius: 0 0 var(--radius) var(--radius);
+            margin-bottom: 30px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 28px;
+            color: var(--accent);
+        }
+
+        .logo h1 {
+            font-family: 'Roboto Slab', serif;
+            font-weight: 600;
+            font-size: 24px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 50px;
+        }
+
+        .user-profile img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+        }
+
+        /* Main Content */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 25px;
+        }
+
+        @media (max-width: 992px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Weather Section */
+        .weather-section {
+            background-color: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .section-header h2 {
+            color: var(--primary);
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .weather-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .weather-input {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--radius);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .weather-input:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        .btn {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background-color: #27ae60;
+        }
+
+        /* Weather Display */
+        .weather-display {
+            display: none;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            text-align: center;
+        }
+
+        .weather-display.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .weather-main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .weather-temp {
+            font-size: 48px;
+            font-weight: 600;
+        }
+
+        .weather-info {
+            text-align: left;
+        }
+
+        .weather-city {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .weather-description {
+            font-size: 18px;
+            opacity: 0.9;
+            text-transform: capitalize;
+        }
+
+        .weather-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .weather-detail {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: var(--radius);
+        }
+
+        .weather-detail i {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: #f1c40f;
+        }
+
+        /* Wealth Dashboard */
+        .wealth-dashboard {
+            background-color: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .wealth-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .wealth-card {
+            padding: 20px;
+            border-radius: var(--radius);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 150px;
+        }
+
+        .wealth-card h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .wealth-card .amount {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .wealth-card .change {
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .positive {
+            color: #2ecc71;
+        }
+
+        .negative {
+            color: #e74c3c;
+        }
+
+        .card-1 {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+
+        .card-2 {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+        }
+
+        .card-3 {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+
+        .card-4 {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
+
+        /* Financial Chart */
+        .chart-container {
+            background-color: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-top: 25px;
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f8f9fa;
+            border-radius: var(--radius);
+            margin-top: 20px;
+            color: var(--gray);
+            font-size: 18px;
+        }
+
+        /* Recent Transactions */
+        .transactions {
+            background-color: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-top: 25px;
+        }
+
+        .transaction-list {
+            margin-top: 20px;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            transition: var(--transition);
+        }
+
+        .transaction-item:hover {
+            background-color: #f9f9f9;
+        }
+
+        .transaction-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .income .transaction-icon {
+            background-color: var(--accent);
+        }
+
+        .expense .transaction-icon {
+            background-color: var(--warning);
+        }
+
+        .transaction-details h4 {
+            font-size: 16px;
+            margin-bottom: 3px;
+        }
+
+        .transaction-details p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .transaction-amount {
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        /* Backend Status */
+        .backend-status {
+            background-color: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-top: 25px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--gray);
+        }
+
+        .status-dot.active {
+            background-color: var(--accent);
+            animation: pulse 2s infinite;
+        }
+
+        .status-message {
+            font-weight: 500;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 40px;
+            padding: 25px 0;
+            text-align: center;
+            color: var(--gray);
+            border-top: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .weather-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .wealth-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .weather-form {
+                flex-direction: column;
+            }
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid white;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            display: none;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-chart-line"></i>
+                    <h1>Wealth<span>Wise</span></h1>
+                </div>
+                
+                <nav>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-home"></i> Dashboard</a></li>
+                        <li><a href="#"><i class="fas fa-wallet"></i> Accounts</a></li>
+                        <li><a href="#"><i class="fas fa-chart-pie"></i> Investments</a></li>
+                        <li><a href="#"><i class="fas fa-exchange-alt"></i> Transactions</a></li>
+                        <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="user-info">
+                    <div class="user-profile">
+                        <img src="https://ui-avatars.com/api/?name=John+Doe&background=2ecc71&color=fff" alt="User Avatar">
+                        <div>
+                            <div class="user-name">John Doe</div>
+                            <div class="user-role">Premium Member</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="dashboard">
+            <!-- Left Column: Wealth Dashboard -->
+            <div class="left-column">
+                <!-- Wealth Dashboard -->
+                <section class="wealth-dashboard">
+                    <div class="section-header">
+                        <h2><i class="fas fa-chart-bar"></i> Financial Overview</h2>
+                        <div class="date-range">July 2024</div>
+                    </div>
+                    
+                    <div class="wealth-cards">
+                        <div class="wealth-card card-1">
+                            <h3>Total Assets</h3>
+                            <div>
+                                <div class="amount">$142,580</div>
+                                <div class="change positive"><i class="fas fa-arrow-up"></i> 3.2% from last month</div>
+                            </div>
+                        </div>
+                        
+                        <div class="wealth-card card-2">
+                            <h3>Net Worth</h3>
+                            <div>
+                                <div class="amount">$98,430</div>
+                                <div class="change positive"><i class="fas fa-arrow-up"></i> 5.7% from last month</div>
+                            </div>
+                        </div>
+                        
+                        <div class="wealth-card card-3">
+                            <h3>Monthly Income</h3>
+                            <div>
+                                <div class="amount">$8,250</div>
+                                <div class="change positive"><i class="fas fa-arrow-up"></i> 2.1% from last month</div>
+                            </div>
+                        </div>
+                        
+                        <div class="wealth-card card-4">
+                            <h3>Investment Growth</h3>
+                            <div>
+                                <div class="amount">12.4%</div>
+                                <div class="change positive"><i class="fas fa-arrow-up"></i> 1.8% from last quarter</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Chart Section -->
+                <section class="chart-container">
+                    <div class="section-header">
+                        <h2><i class="fas fa-chart-line"></i> Wealth Growth Trend</h2>
+                        <select id="chart-period">
+                            <option>Last 6 Months</option>
+                            <option selected>Last Year</option>
+                            <option>Last 3 Years</option>
+                        </select>
+                    </div>
+                    
+                    <div class="chart-placeholder">
+                        <div>
+                            <i class="fas fa-chart-line fa-3x" style="color: #3498db; margin-bottom: 15px;"></i>
+                            <p>Interactive chart would appear here</p>
+                            <p style="font-size: 14px; margin-top: 5px;">(Chart integration with libraries like Chart.js)</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Recent Transactions -->
+                <section class="transactions">
+                    <div class="section-header">
+                        <h2><i class="fas fa-exchange-alt"></i> Recent Transactions</h2>
+                        <a href="#" class="btn btn-primary"><i class="fas fa-plus"></i> Add New</a>
+                    </div>
+                    
+                    <div class="transaction-list">
+                        <div class="transaction-item income">
+                            <div class="transaction-info">
+                                <div class="transaction-icon">
+                                    <i class="fas fa-salary"></i>
+                                </div>
+                                <div class="transaction-details">
+                                    <h4>Monthly Salary</h4>
+                                    <p>July 15, 2024 • Direct Deposit</p>
+                                </div>
+                            </div>
+                            <div class="transaction-amount positive">+$5,800</div>
+                        </div>
+                        
+                        <div class="transaction-item expense">
+                            <div class="transaction-info">
+                                <div class="transaction-icon">
+                                    <i class="fas fa-home"></i>
+                                </div>
+                                <div class="transaction-details">
+                                    <h4>Mortgage Payment</h4>
+                                    <p>July 10, 2024 • Automated Payment</p>
+                                </div>
+                            </div>
+                            <div class="transaction-amount negative">-$2,100</div>
+                        </div>
+                        
+                        <div class="transaction-item income">
+                            <div class="transaction-info">
+                                <div class="transaction-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="transaction-details">
+                                    <h4>Investment Dividend</h4>
+                                    <p>July 5, 2024 • Stock Portfolio</p>
+                                </div>
+                            </div>
+                            <div class="transaction-amount positive">+$320</div>
+                        </div>
+                        
+                        <div class="transaction-item expense">
+                            <div class="transaction-info">
+                                <div class="transaction-icon">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </div>
+                                <div class="transaction-details">
+                                    <h4>Monthly Expenses</h4>
+                                    <p>July 1, 2024 • Credit Card Payment</p>
+                                </div>
+                            </div>
+                            <div class="transaction-amount negative">-$1,450</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            <!-- Right Column: Weather & Backend Info -->
+            <div class="right-column">
+                <!-- Weather Section -->
+                <section class="weather-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-cloud-sun"></i> Weather Information</h2>
+                        <i class="fas fa-info-circle" title="Weather data powered by OpenWeatherMap API"></i>
+                    </div>
+                    
+                    <div class="weather-form">
+                        <input type="text" class="weather-input" id="city-input" placeholder="Enter city name (e.g., New York)" value="New York">
+                        <button class="btn" id="get-weather-btn">
+                            <i class="fas fa-search"></i> Get Weather
+                        </button>
+                    </div>
+                    
+                    <div class="weather-display" id="weather-display">
+                        <div class="weather-main">
+                            <div class="weather-icon">
+                                <i class="fas fa-sun fa-3x"></i>
+                            </div>
+                            <div class="weather-info">
+                                <div class="weather-city" id="weather-city">New York</div>
+                                <div class="weather-description" id="weather-description">Clear sky</div>
+                            </div>
+                            <div class="weather-temp" id="weather-temp">24°C</div>
+                        </div>
+                        
+                        <div class="weather-details">
+                            <div class="weather-detail">
+                                <i class="fas fa-temperature-high"></i>
+                                <div>Feels Like</div>
+                                <div class="detail-value" id="feels-like">25°C</div>
+                            </div>
+                            <div class="weather-detail">
+                                <i class="fas fa-tint"></i>
+                                <div>Humidity</div>
+                                <div class="detail-value" id="humidity">65%</div>
+                            </div>
+                            <div class="weather-detail">
+                                <i class="fas fa-wind"></i>
+                                <div>Wind Speed</div>
+                                <div class="detail-value" id="wind-speed">5.5 m/s</div>
+                            </div>
+                        </div>
+                        
+                        <div class="spinner" id="weather-spinner"></div>
+                    </div>
+                    
+                    <div class="weather-display active" id="weather-placeholder">
+                        <p>Enter a city name and click "Get Weather" to see current weather conditions.</p>
+                        <p style="font-size: 14px; margin-top: 10px; opacity: 0.8;">Connected to your Express backend on Render</p>
+                    </div>
+                </section>
+                
+                <!-- Backend Status -->
+                <section class="backend-status">
+                    <div class="section-header">
+                        <h2><i class="fas fa-server"></i> Backend Status</h2>
+                    </div>
+                    
+                    <p>This frontend connects to your Express.js backend which fetches weather data from OpenWeatherMap API.</p>
+                    
+                    <div class="status-indicator">
+                        <div class="status-dot active" id="backend-status-dot"></div>
+                        <div class="status-message" id="backend-status-message">Backend connection: Active</div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; font-size: 14px; background-color: #f8f9fa; padding: 15px; border-radius: var(--radius);">
+                        <p><strong>Backend Configuration:</strong></p>
+                        <ul style="margin-left: 20px; margin-top: 8px;">
+                            <li>Port: 5000</li>
+                            <li>API Endpoint: <code>/get_weather</code></li>
+                            <li>API Key: OpenWeatherMap</li>
+                            <li>Deployed on: Render</li>
+                        </ul>
+                    </div>
+                </section>
+                
+                <!-- Quick Actions -->
+                <section class="weather-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
+                        <button class="btn btn-primary" style="width: 100%;">
+                            <i class="fas fa-plus-circle"></i> Add Asset
+                        </button>
+                        <button class="btn" style="width: 100%;">
+                            <i class="fas fa-file-export"></i> Export Data
+                        </button>
+                    </div>
+                    
+                    <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee;">
+                        <h3 style="font-size: 16px; margin-bottom: 10px;">Weather Impact on Investments</h3>
+                        <p style="font-size: 14px; color: var(--gray);">
+                            Weather conditions can affect certain investment sectors like energy, agriculture, and retail. Consider seasonal trends in your portfolio strategy.
+                        </p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>© 2024 WealthWise Financial Dashboard. All rights reserved.</p>
+            <p style="margin-top: 10px; font-size: 13px;">
+                This demo integrates with a backend API to fetch real-time weather data. 
+                Backend code is written in Express.js and deployed on Render.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const cityInput = document.getElementById('city-input');
+            const getWeatherBtn = document.getElementById('get-weather-btn');
+            const weatherDisplay = document.getElementById('weather-display');
+            const weatherPlaceholder = document.getElementById('weather-placeholder');
+            const weatherSpinner = document.getElementById('weather-spinner');
+            
+            // Weather display elements
+            const weatherCity = document.getElementById('weather-city');
+            const weatherDescription = document.getElementById('weather-description');
+            const weatherTemp = document.getElementById('weather-temp');
+            const feelsLike = document.getElementById('feels-like');
+            const humidity = document.getElementById('humidity');
+            const windSpeed = document.getElementById('wind-speed');
+            const backendStatusDot = document.getElementById('backend-status-dot');
+            const backendStatusMessage = document.getElementById('backend-status-message');
+            
+            // Backend URL - Change this to your Render backend URL when deployed
+            // For local development, use http://localhost:5000
+            // For production, use your Render URL (e.g., https://your-backend.onrender.com)
+            const BACKEND_URL = 'http://localhost:5000';
+            // const BACKEND_URL = 'https://your-backend.onrender.com'; // Uncomment and replace when deployed
+            
+            // Check backend connection on load
+            checkBackendConnection();
+            
+            // Event Listeners
+            getWeatherBtn.addEventListener('click', getWeather);
+            cityInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    getWeather();
+                }
+            });
+            
+            // Function to check backend connection
+            async function checkBackendConnection() {
+                try {
+                    // Try to fetch from backend health endpoint (you might want to add one)
+                    // For now, we'll just check if the server is reachable by trying the weather endpoint
+                    const response = await fetch(`${BACKEND_URL}/get_weather?city=London`, {
+                        method: 'GET',
+                        mode: 'cors',
+                        headers: {
+                            'Accept': 'application/json',
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        backendStatusDot.classList.add('active');
+                        backendStatusMessage.textContent = 'Backend connection: Active';
+                    } else {
+                        backendStatusDot.classList.remove('active');
+                        backendStatusMessage.textContent = 'Backend connection: Error (check URL)';
+                    }
+                } catch (error) {
+                    console.error('Backend connection error:', error);
+                    backendStatusDot.classList.remove('active');
+                    backendStatusMessage.textContent = 'Backend connection: Failed (check console)';
+                    
+                    // Show alert if backend is not reachable
+                    setTimeout(() => {
+                        alert(`Cannot connect to backend at ${BACKEND_URL}. Please make sure your backend server is running. For local development, use 'npm start' in your backend directory.`);
+                    }, 1000);
+                }
+            }
+            
+            // Function to get weather data
+            async function getWeather() {
+                const city = cityInput.value.trim();
+                
+                if (!city) {
+                    alert('Please enter a city name');
+                    return;
+                }
+                
+                // Show loading spinner
+                weatherSpinner.style.display = 'block';
+                weatherPlaceholder.classList.remove('active');
+                weatherDisplay.classList.remove('active');
+                
+                try {
+                    // Call your backend API
+                    const response = await fetch(`${BACKEND_URL}/get_weather?city=${encodeURIComponent(city)}`);
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    
+                    // Update UI with weather data
+                    updateWeatherDisplay(data);
+                    
+                    // Hide placeholder and show weather display
+                    weatherPlaceholder.classList.remove('active');
+                    weatherDisplay.classList.add('active');
+                    
+                } catch (error) {
+                    console.error('Error fetching weather:', error);
+                    alert(`Failed to get weather: ${error.message}. Please check the city name and backend connection.`);
+                    
+                    // Show placeholder again
+                    weatherPlaceholder.classList.add('active');
+                    weatherDisplay.classList.remove('active');
+                } finally {
+                    // Hide spinner
+                    weatherSpinner.style.display = 'none';
+                }
+            }
+            
+            // Function to update weather display
+            function updateWeatherDisplay(data) {
+                weatherCity.textContent = data.name || 'Unknown City';
+                weatherDescription.textContent = data.weather && data.weather[0] ? data.weather[0].description : 'No data';
+                weatherTemp.textContent = `${Math.round(data.main.temp)}°C`;
+                feelsLike.textContent = `${Math.round(data.main.feels_like)}°C`;
+                humidity.textContent = `${data.main.humidity}%`;
+                windSpeed.textContent = `${data.wind.speed} m/s`;
+                
+                // Update weather icon based on conditions
+                const weatherIcon = document.querySelector('.weather-icon i');
+                const weatherMain = data.weather && data.weather[0] ? data.weather[0].main.toLowerCase() : 'clear';
+                
+                // Map weather conditions to FontAwesome icons
+                const iconMap = {
+                    'clear': 'fa-sun',
+                    'clouds': 'fa-cloud',
+                    'rain': 'fa-cloud-rain',
+                    'drizzle': 'fa-cloud-rain',
+                    'thunderstorm': 'fa-bolt',
+                    'snow': 'fa-snowflake',
+                    'mist': 'fa-smog',
+                    'smoke': 'fa-smog',
+                    'haze': 'fa-smog',
+                    'fog': 'fa-smog'
+                };
+                
+                weatherIcon.className = `fas fa-3x ${iconMap[weatherMain] || 'fa-sun'}`;
+            }
+            
+            // Initialize with example weather for New York
+            // This is just for demo purposes - in production, you'd call getWeather() for real data
+            // For now, we'll just show the placeholder
+            weatherPlaceholder.classList.add('active');
+            
+            // Add some interactive elements to the wealth dashboard
+            document.querySelectorAll('.wealth-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const title = this.querySelector('h3').textContent;
+                    alert(`You clicked on ${title}. In a full application, this would open detailed analytics.`);
+                });
+            });
+            
+            // Update the current date in the header
+            const now = new Date();
+            const options = { month: 'long', year: 'numeric' };
+            document.querySelector('.date-range').textContent = now.toLocaleDateString('en-US', options);
+        });
+    </script>
+</body>
+</html>
